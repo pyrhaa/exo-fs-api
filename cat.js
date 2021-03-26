@@ -9,16 +9,18 @@ if (process.argv.length <= 2) {
 }
 
 // check if the path exist
-if (!fs.existsSync(process.argv[2])) {
-  console.log(chalk.blue(`warning : ${process.argv[2]} n'existe pas.`));
-  process.exit(1);
-}
+// if (!fs.existsSync(process.argv[2])) {
+//   console.log(chalk.blue(`warning : ${process.argv[2]} n'existe pas.`));
+//   process.exit(1);
+// }
 
-//check if the value is a file or a directory (you choose)
-
-//loop in array
+//loop in array and verifications
 process.argv.forEach((el, i) => {
   if (i >= 2) {
+    if (!fs.existsSync(el)) {
+      console.log(chalk.blue(`warning : ${el} n'existe pas.`));
+      return;
+    }
     const stats = fs.statSync(el);
     if (!stats.isFile()) {
       console.log(chalk.blue(`warning : ${el} pas un fichier.`));
