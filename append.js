@@ -1,4 +1,5 @@
 const fs = require('fs');
+const chalk = require('chalk');
 
 // check if command line is well
 if (process.argv.length < 3) {
@@ -7,15 +8,23 @@ if (process.argv.length < 3) {
 }
 
 // if file is a file and if that exist
-process.argv.forEach((el, i) => {
-  if (i >= 2) {
-    if (!fs.existsSync(el)) {
-      console.log(chalk.blue(`warning : ${el} n'existe pas.`));
-      return;
-    }
-    const stats = fs.statSync(el);
-    if (!stats.isFile()) {
-      console.log(chalk.blue(`warning : ${el} pas un fichier.`));
-    }
+process.argv.slice(2, -1).forEach((el) => {
+  //.slice 2, -1  argv array tranche de argv2 au dernier el
+  if (!fs.existsSync(el)) {
+    console.log(chalk.blue(`warning : ${el} n'existe pas.`));
+    process.exit(1);
+  }
+  const stats = fs.statSync(el);
+  if (!stats.isFile()) {
+    console.log(chalk.blue(`warning : ${el} pas un fichier.`));
+    process.exit(1);
   }
 });
+
+let contentFile = '';
+//length -1 pour select le dernier
+for (let i = 2; i < process.argv.length - 1; ++i) {
+  contentFile += fs.readFileSync(process.argv[i], 'utf-8') + '\n';
+}
+const last = process.argv[process.argv.length - 1];
+fs.writeFileSync(last, contentFile);
